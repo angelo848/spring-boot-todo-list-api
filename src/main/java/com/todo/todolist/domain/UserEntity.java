@@ -9,21 +9,24 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "user")
 public class UserEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-  @PrimaryIDGenerator
+  @GenericGenerator(name = "native", strategy = "native")
   private Long id;
 
   private String name;
