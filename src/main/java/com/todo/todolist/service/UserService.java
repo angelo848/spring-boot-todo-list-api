@@ -1,6 +1,7 @@
 package com.todo.todolist.service;
 
 import com.todo.todolist.domain.UserEntity;
+import com.todo.todolist.model.exception.EntityNotFoundException;
 import com.todo.todolist.model.exception.ExistingEntityException;
 import com.todo.todolist.model.request.UserCreateRequest;
 import com.todo.todolist.repository.UserRepository;
@@ -25,5 +26,14 @@ public class UserService {
         .email(userCreate.email())
         .password(userCreate.password())
         .build());
+  }
+
+  public Optional<UserEntity> findById(Long id) {
+    return userRepository.findById(id);
+  }
+
+  public UserEntity getById(Long id) {
+    return findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("User not found"));
   }
 }

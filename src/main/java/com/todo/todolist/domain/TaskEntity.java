@@ -25,8 +25,7 @@ import lombok.Setter;
 public class TaskEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-  @PrimaryIDGenerator
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   private String description;

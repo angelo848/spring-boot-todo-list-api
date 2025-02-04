@@ -6,10 +6,10 @@ spring:
     username: myuser
     url: jdbc:mysql://localhost:3306/todolist
     password: secret
-    jpa:
-      hibernate:
-        ddl-auto: none
-      show-sql: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
   flyway:
     enabled: true
     locations: classpath:db/migrations/mysql
