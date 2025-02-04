@@ -17,3 +17,7 @@ spring:
     url: jdbc:mysql://localhost:3306/todolist
     password: secret
     user: myuser
+management:
+  endpoint:
+    env:
+      show-values: always

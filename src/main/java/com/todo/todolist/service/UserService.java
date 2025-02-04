@@ -7,6 +7,7 @@ import com.todo.todolist.model.request.UserCreateRequest;
 import com.todo.todolist.repository.UserRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -21,10 +22,11 @@ public class UserService {
       throw new ExistingEntityException("User already exists with this email");
     }
 
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(14);
     userRepository.save(UserEntity.builder()
         .name(userCreate.name())
         .email(userCreate.email())
-        .password(userCreate.password())
+        .password(encoder.encode(userCreate.password()))
         .build());
   }
 
