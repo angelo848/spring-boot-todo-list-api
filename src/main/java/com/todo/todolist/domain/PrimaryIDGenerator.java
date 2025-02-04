@@ -1,14 +1,8 @@
 package com.todo.todolist.domain;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import org.hibernate.annotations.IdGeneratorType;
-import org.hibernate.id.enhanced.SequenceStyleGenerator;
+import org.hibernate.id.IncrementGenerator;
 
-@IdGeneratorType(SequenceStyleGenerator.class)
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.METHOD })
+@IdGeneratorType(IncrementGenerator.class)
 public @interface PrimaryIDGenerator {
 }
