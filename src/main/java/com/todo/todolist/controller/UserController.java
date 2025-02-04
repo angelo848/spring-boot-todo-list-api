@@ -3,6 +3,7 @@ package com.todo.todolist.controller;
 import com.todo.todolist.domain.UserEntity;
 import com.todo.todolist.model.mapper.UserMapper;
 import com.todo.todolist.model.request.UserCreateRequest;
+import com.todo.todolist.model.request.UserLoginRequest;
 import com.todo.todolist.model.response.UserResponse;
 import com.todo.todolist.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,10 @@ public class UserController {
   public ResponseEntity<Void> createUser(@RequestBody UserCreateRequest userCreate) {
     userService.create(userCreate);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/login")
+  public ResponseEntity<Boolean> login(@RequestBody UserLoginRequest loginRequest) {
+    return ResponseEntity.ok(userService.login(loginRequest));
   }
 }
