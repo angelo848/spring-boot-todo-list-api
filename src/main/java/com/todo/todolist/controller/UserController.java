@@ -35,7 +35,7 @@ public class UserController {
   }
 
   @GetMapping("/login")
-  public ResponseEntity<Boolean> login(@RequestBody UserLoginRequest loginRequest) {
+  public ResponseEntity<String> login(@RequestBody UserLoginRequest loginRequest) {
     return ResponseEntity.ok(userService.login(loginRequest));
   }
 }
