@@ -1,0 +1,5 @@
+CREATE TABLE `REVINFO` (
+    `REV`      bigint(20) NOT NULL AUTO_INCREMENT,
+    `REVTSTMP` bigint(20) DEFAULT NULL,
+    PRIMARY KEY (`REV`)
+);

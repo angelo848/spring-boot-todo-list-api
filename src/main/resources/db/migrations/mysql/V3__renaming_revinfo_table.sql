@@ -1,0 +1,1 @@
+RENAME TABLE `REVINFO` TO `revinfo`;

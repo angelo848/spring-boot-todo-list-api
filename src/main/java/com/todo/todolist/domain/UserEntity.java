@@ -1,6 +1,8 @@
 package com.todo.todolist.domain;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +15,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Setter
@@ -20,8 +24,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
+@Audited
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "user")
-public class UserEntity {
+public class UserEntity extends Auditable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +39,6 @@ public class UserEntity {
 
   private String password;
 
-  @OneToMany(fetch = FetchType.LAZY)
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private List<TaskEntity> tasks;
 }
