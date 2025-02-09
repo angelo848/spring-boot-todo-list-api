@@ -1,10 +1,12 @@
 package com.todo.todolist.config;
 
 import java.util.Optional;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@Component
+@Configuration
+@EnableJpaAuditing
 public class AuditorAwareImpl implements AuditorAware<String> {
 
   @Override
