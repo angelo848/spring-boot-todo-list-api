@@ -21,3 +21,7 @@ management:
   endpoint:
     env:
       show-values: always
+security:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    expiration-time: 14400000
