@@ -7,18 +7,17 @@ import com.todo.todolist.model.exception.EntityNotFoundException;
 import com.todo.todolist.model.exception.UnauthorizedResourceException;
 import com.todo.todolist.model.request.TaskCreateRequest;
 import com.todo.todolist.model.request.TaskFilterRequest;
-import com.todo.todolist.model.response.TaskResponse;
 import com.todo.todolist.repository.TaskRepository;
 import com.todo.todolist.repository.UserRepository;
 import com.todo.todolist.specification.TaskSpecification;
 import com.todo.todolist.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -78,7 +77,7 @@ public class TaskService {
     taskRepository.delete(task);
   }
 
-  public List<TaskEntity> getTasksByUserId(Long userId, TaskFilterRequest filter) {
+  public Page<TaskEntity> getTasksByUserId(Long userId, TaskFilterRequest filter) {
     UserEntity user = userService.getById(userId);
     String operatorId = getOperatorId();
     if (!operatorId.equals(user.getEmail())) {
@@ -93,7 +92,9 @@ public class TaskService {
       spec = spec.and(TaskSpecification.hasDescription(filter.description()));
     }
 
-    return taskRepository.findAll(spec);
+    PageRequest pageable = PageRequest.of(filter.page(), filter.size());
+
+    return taskRepository.findAll(spec, pageable);
   }
 
   private String getOperatorId() {

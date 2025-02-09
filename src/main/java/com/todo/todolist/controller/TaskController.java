@@ -7,8 +7,8 @@ import com.todo.todolist.model.request.TaskCreateRequest;
 import com.todo.todolist.model.request.TaskFilterRequest;
 import com.todo.todolist.model.response.TaskResponse;
 import com.todo.todolist.service.TaskService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,9 +46,9 @@ public class TaskController {
   }
 
   @GetMapping("/{userId}/tasks")
-  public ResponseEntity<List<TaskResponse>> getTasksByUserId(@PathVariable Long userId,
+  public ResponseEntity<Page<TaskResponse>> getTasksByUserId(@PathVariable Long userId,
                                                              TaskFilterRequest filter) {
-    List<TaskEntity> tasks = taskService.getTasksByUserId(userId, filter);
-    return ResponseEntity.ok(TaskMapper.INSTANCE.toResponse(tasks));
+    Page<TaskEntity> tasks = taskService.getTasksByUserId(userId, filter);
+    return ResponseEntity.ok(tasks.map(TaskMapper.INSTANCE::toResponse));
   }
 }
