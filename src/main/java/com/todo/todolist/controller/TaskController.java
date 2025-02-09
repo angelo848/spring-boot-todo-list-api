@@ -9,6 +9,7 @@ import com.todo.todolist.model.response.TaskResponse;
 import com.todo.todolist.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,8 +48,9 @@ public class TaskController {
 
   @GetMapping("/{userId}/tasks")
   public ResponseEntity<Page<TaskResponse>> getTasksByUserId(@PathVariable Long userId,
-                                                             TaskFilterRequest filter) {
-    Page<TaskEntity> tasks = taskService.getTasksByUserId(userId, filter);
+                                                             TaskFilterRequest filter,
+                                                             Pageable pageable) {
+    Page<TaskEntity> tasks = taskService.getTasksByUserId(userId, filter, pageable);
     return ResponseEntity.ok(tasks.map(TaskMapper.INSTANCE::toResponse));
   }
 }

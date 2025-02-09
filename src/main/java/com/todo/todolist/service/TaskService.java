@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -77,7 +79,7 @@ public class TaskService {
     taskRepository.delete(task);
   }
 
-  public Page<TaskEntity> getTasksByUserId(Long userId, TaskFilterRequest filter) {
+  public Page<TaskEntity> getTasksByUserId(Long userId, TaskFilterRequest filter, Pageable pageable) {
     UserEntity user = userService.getById(userId);
     String operatorId = getOperatorId();
     if (!operatorId.equals(user.getEmail())) {
@@ -91,8 +93,6 @@ public class TaskService {
     if (StringUtils.isNotBlank(filter.description())) {
       spec = spec.and(TaskSpecification.hasDescription(filter.description()));
     }
-
-    PageRequest pageable = PageRequest.of(filter.page(), filter.size());
 
     return taskRepository.findAll(spec, pageable);
   }
