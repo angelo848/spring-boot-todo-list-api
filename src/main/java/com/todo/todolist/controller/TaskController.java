@@ -5,6 +5,7 @@ import com.todo.todolist.domain.TaskStatusEnum;
 import com.todo.todolist.model.mapper.TaskMapper;
 import com.todo.todolist.model.request.TaskCreateRequest;
 import com.todo.todolist.model.request.TaskFilterRequest;
+import com.todo.todolist.model.response.TaskDetailResponse;
 import com.todo.todolist.model.response.TaskResponse;
 import com.todo.todolist.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -53,4 +54,10 @@ public class TaskController {
     Page<TaskEntity> tasks = taskService.getTasksByUserId(userId, filter, pageable);
     return ResponseEntity.ok(tasks.map(TaskMapper.INSTANCE::toResponse));
   }
+
+  @GetMapping("/{id}")
+    public ResponseEntity<TaskDetailResponse> getTaskById(@PathVariable Long id) {
+        TaskEntity task = taskService.getById(id);
+        return ResponseEntity.ok(TaskMapper.INSTANCE.toDetailResponse(task));
+    }
 }

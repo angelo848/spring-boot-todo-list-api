@@ -16,15 +16,15 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TaskService {
+
+  private static final String TASK_NOT_FOUND = "Task with id: %d not found";
 
   private final TaskRepository taskRepository;
 
@@ -38,10 +38,7 @@ public class TaskService {
   public void create(TaskCreateRequest taskCreate) {
     UserEntity user = userService.getById(taskCreate.userId());
 
-    String operatorId = getOperatorId();
-    if (!operatorId.equals(user.getEmail())) {
-      throw new UnauthorizedResourceException("You are not allowed to create a task for this user");
-    }
+    validateResourceOwner(user, getOperatorId(), "You are not allowed to create a task for this user");
 
     taskRepository.save(TaskEntity.builder()
         .description(taskCreate.description())
@@ -51,12 +48,9 @@ public class TaskService {
 
   public void update(Long taskId, TaskStatusEnum newStatus) {
     TaskEntity task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new EntityNotFoundException(String.format("Task with id: %d not found", taskId)));
+        .orElseThrow(() -> new EntityNotFoundException(String.format(TASK_NOT_FOUND, taskId)));
 
-    String operatorId = getOperatorId();
-    if (!operatorId.equals(task.getUser().getEmail())) {
-      throw new UnauthorizedResourceException("You are not allowed to update this task");
-    }
+    validateResourceOwner(task.getUser(), getOperatorId(), "You are not allowed to update this task");
 
     boolean canUpdateTaskStatus = TaskStatusMachine.statusChangeAllowed(task.getStatus(), newStatus);
     if (!canUpdateTaskStatus) {
@@ -69,22 +63,16 @@ public class TaskService {
 
   public void delete(Long taskId) {
     TaskEntity task = taskRepository.findById(taskId)
-        .orElseThrow(() -> new EntityNotFoundException(String.format("Task with id: %d not found", taskId)));
+        .orElseThrow(() -> new EntityNotFoundException(String.format(TASK_NOT_FOUND, taskId)));
 
-    String operatorId = getOperatorId();
-    if (!operatorId.equals(task.getUser().getEmail())) {
-      throw new UnauthorizedResourceException("You are not allowed to delete this task");
-    }
+    validateResourceOwner(task.getUser(), getOperatorId(), "You are not allowed to delete this task");
 
     taskRepository.delete(task);
   }
 
   public Page<TaskEntity> getTasksByUserId(Long userId, TaskFilterRequest filter, Pageable pageable) {
     UserEntity user = userService.getById(userId);
-    String operatorId = getOperatorId();
-    if (!operatorId.equals(user.getEmail())) {
-      throw new UnauthorizedResourceException("You are not allowed to get tasks for this user");
-    }
+    validateResourceOwner(user, getOperatorId(), "You are not allowed to get tasks for this user");
 
     Specification<TaskEntity> spec = Specification.where(TaskSpecification.hasUserId(userId));
     if (Objects.nonNull(filter.status())) {
@@ -97,8 +85,24 @@ public class TaskService {
     return taskRepository.findAll(spec, pageable);
   }
 
+  public TaskEntity getById(Long id) {
+    TaskEntity taskEntity = taskRepository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException(String.format(TASK_NOT_FOUND, id)));
+
+    UserEntity user = taskEntity.getUser();
+    validateResourceOwner(user, getOperatorId(), String.format("Task with id: %d not found for current user!", id));
+
+    return taskEntity;
+  }
+
   private String getOperatorId() {
     String token = request.getHeader("Authorization");
     return jwtUtil.extractUserEmail(token.substring(7));
+  }
+
+  private void validateResourceOwner(UserEntity user, String operatorId, String errorMessage) {
+    if (!operatorId.equals(user.getEmail())) {
+      throw new UnauthorizedResourceException(errorMessage);
+    }
   }
 }
