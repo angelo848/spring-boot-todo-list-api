@@ -1,11 +1,17 @@
 package com.todo.todolist.controller;
 
+import com.todo.todolist.domain.TaskEntity;
 import com.todo.todolist.domain.TaskStatusEnum;
+import com.todo.todolist.model.mapper.TaskMapper;
 import com.todo.todolist.model.request.TaskCreateRequest;
+import com.todo.todolist.model.request.TaskFilterRequest;
+import com.todo.todolist.model.response.TaskResponse;
 import com.todo.todolist.service.TaskService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,5 +43,12 @@ public class TaskController {
   public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
     taskService.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/{userId}/tasks")
+  public ResponseEntity<List<TaskResponse>> getTasksByUserId(@PathVariable Long userId,
+                                                             TaskFilterRequest filter) {
+    List<TaskEntity> tasks = taskService.getTasksByUserId(userId, filter);
+    return ResponseEntity.ok(TaskMapper.INSTANCE.toResponse(tasks));
   }
 }

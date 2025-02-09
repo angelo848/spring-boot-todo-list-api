@@ -1,0 +1,17 @@
+package com.todo.todolist.model.mapper;
+
+import com.todo.todolist.domain.TaskEntity;
+import com.todo.todolist.model.response.TaskResponse;
+import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
+
+@Mapper
+public interface TaskMapper {
+
+  TaskMapper INSTANCE = Mappers.getMapper(TaskMapper.class);
+
+  TaskResponse toResponse(TaskEntity task);
+
+  List<TaskResponse> toResponse(List<TaskEntity> taskList);
+}

@@ -32,6 +32,8 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 
+    implementation("org.apache.commons:commons-lang3")
+
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 
     implementation("org.flywaydb:flyway-core")

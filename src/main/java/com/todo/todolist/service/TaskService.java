@@ -6,10 +6,18 @@ import com.todo.todolist.domain.UserEntity;
 import com.todo.todolist.model.exception.EntityNotFoundException;
 import com.todo.todolist.model.exception.UnauthorizedResourceException;
 import com.todo.todolist.model.request.TaskCreateRequest;
+import com.todo.todolist.model.request.TaskFilterRequest;
+import com.todo.todolist.model.response.TaskResponse;
 import com.todo.todolist.repository.TaskRepository;
+import com.todo.todolist.repository.UserRepository;
+import com.todo.todolist.specification.TaskSpecification;
 import com.todo.todolist.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.scheduling.config.Task;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +32,7 @@ public class TaskService {
   private final HttpServletRequest request;
 
   private final JwtUtil jwtUtil;
+  private final UserRepository userRepository;
 
   public void create(TaskCreateRequest taskCreate) {
     UserEntity user = userService.getById(taskCreate.userId());
@@ -67,6 +76,24 @@ public class TaskService {
     }
 
     taskRepository.delete(task);
+  }
+
+  public List<TaskEntity> getTasksByUserId(Long userId, TaskFilterRequest filter) {
+    UserEntity user = userService.getById(userId);
+    String operatorId = getOperatorId();
+    if (!operatorId.equals(user.getEmail())) {
+      throw new UnauthorizedResourceException("You are not allowed to get tasks for this user");
+    }
+
+    Specification<TaskEntity> spec = Specification.where(TaskSpecification.hasUserId(userId));
+    if (Objects.nonNull(filter.status())) {
+      spec = spec.and(TaskSpecification.hasStatus(filter.status()));
+    }
+    if (StringUtils.isNotBlank(filter.description())) {
+      spec = spec.and(TaskSpecification.hasDescription(filter.description()));
+    }
+
+    return taskRepository.findAll(spec);
   }
 
   private String getOperatorId() {
