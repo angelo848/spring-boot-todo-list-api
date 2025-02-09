@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DateUtils {
+public abstract class DateUtils {
 
   public static Date convertFromLocalDateTimeAdjustedToZoneTime(LocalDateTime localDateTime) {
     return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
