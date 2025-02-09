@@ -5,6 +5,7 @@ import com.todo.todolist.model.request.TaskCreateRequest;
 import com.todo.todolist.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,6 +30,12 @@ public class TaskController {
   @PutMapping("/update/{id}")
   public ResponseEntity<Void> updateTask(@PathVariable Long id, @RequestParam TaskStatusEnum taskStatus) {
     taskService.update(id, taskStatus);
+    return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/delete/{id}")
+  public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    taskService.delete(id);
     return ResponseEntity.noContent().build();
   }
 }

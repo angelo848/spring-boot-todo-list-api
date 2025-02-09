@@ -49,12 +49,24 @@ public class TaskService {
     }
 
     boolean canUpdateTaskStatus = TaskStatusMachine.statusChangeAllowed(task.getStatus(), newStatus);
-
     if (!canUpdateTaskStatus) {
       throw new IllegalArgumentException(String.format("Cannot change task status from %s to %s", task.getStatus(), newStatus));
     }
+
     task.setStatus(newStatus);
     taskRepository.save(task);
+  }
+
+  public void delete(Long taskId) {
+    TaskEntity task = taskRepository.findById(taskId)
+        .orElseThrow(() -> new EntityNotFoundException(String.format("Task with id: %d not found", taskId)));
+
+    String operatorId = getOperatorId();
+    if (!operatorId.equals(task.getUser().getEmail())) {
+      throw new UnauthorizedResourceException("You are not allowed to delete this task");
+    }
+
+    taskRepository.delete(task);
   }
 
   private String getOperatorId() {
