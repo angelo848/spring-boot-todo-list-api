@@ -1,6 +1,8 @@
 spring:
   application:
     name: todo-list
+  profiles:
+    active: ${SCOPE}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: myuser
@@ -10,6 +12,9 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+  h2:
+    console:
+      enabled: false
   flyway:
     enabled: true
     locations: classpath:db/migrations/mysql

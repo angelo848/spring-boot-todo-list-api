@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: todo-list-dev
+  jpa:
+    show-sql: true
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  flyway:
+    enabled: false
+  sql:
+    init:
+      mode: always

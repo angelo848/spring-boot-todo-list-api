@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -69,6 +70,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private boolean checkIfEndpointIsNotPublic(HttpServletRequest request) {
     String requestURI = request.getRequestURI();
-    return !ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED.contains(requestURI);
+    Pattern pattern = Pattern.compile(".*/h2-console.*");
+    return ENDPOINTS_WITH_AUTHENTICATION_NOT_REQUIRED.stream()
+        .noneMatch(endpoint -> pattern.matcher(requestURI).matches() || requestURI.equals(endpoint));
   }
 }

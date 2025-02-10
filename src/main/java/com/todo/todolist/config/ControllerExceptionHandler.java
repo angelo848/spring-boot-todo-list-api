@@ -6,6 +6,7 @@ import com.todo.todolist.model.exception.ExistingEntityException;
 import com.todo.todolist.model.exception.InvalidLoginException;
 import com.todo.todolist.model.exception.InvalidTokenException;
 import com.todo.todolist.model.exception.UnauthorizedResourceException;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -62,6 +63,15 @@ public class ControllerExceptionHandler {
   @ExceptionHandler(IllegalArgumentException.class)
   protected ResponseEntity<ApiError> handleIllegalArgumentException(IllegalArgumentException e) {
     Integer statusCode = HttpStatus.BAD_REQUEST.value();
+
+    ApiError apiError = new ApiError(e.getMessage(), statusCode);
+    return ResponseEntity.status(apiError.status())
+        .body(apiError);
+  }
+
+  @ExceptionHandler(ExpiredJwtException.class)
+  protected ResponseEntity<ApiError> handleExpiredJwtException(ExpiredJwtException e) {
+    Integer statusCode = HttpStatus.UNAUTHORIZED.value();
 
     ApiError apiError = new ApiError(e.getMessage(), statusCode);
     return ResponseEntity.status(apiError.status())
