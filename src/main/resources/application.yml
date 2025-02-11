@@ -5,8 +5,8 @@ spring:
     active: ${SCOPE}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: myuser
     url: jdbc:mysql://localhost:3306/todolist
+    username: myuser
     password: secret
   jpa:
     hibernate:
@@ -20,8 +20,8 @@ spring:
     locations: classpath:db/migrations/mysql
     schemas: todolist
     url: jdbc:mysql://localhost:3306/todolist
-    password: secret
     user: myuser
+    password: secret
 management:
   endpoint:
     env:

@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://todolist.creidoxf6sll.us-east-1.rds.amazonaws.com/todolist
+    username: admin
+    password: Ngelo04102
+  jpa:
+    show-sql: false
+  flyway:
+    url: jdbc:mysql://todolist.creidoxf6sll.us-east-1.rds.amazonaws.com/todolist
+    user: myuser
+    password: secret
